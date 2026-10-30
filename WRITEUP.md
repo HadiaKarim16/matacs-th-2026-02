@@ -15,3 +15,47 @@ The final decision is made by a human.
 every time and be explainable, and AI can vary or make mistakes. If the AI only
 extracts, a wrong result can be traced to a specific quote and corrected, and the AI
 never decides who wins.
+
+
+## 2. Consistency and explainability
+
+**Would ranking the same proposals twice give the same result? Yes.**
+The AI runs once per proposal at temperature 0, and its extracted JSON is saved.
+Scoring is a fixed formula in code, so the same JSON and the same criteria version
+always give the same scores. Re-ranking reuses the saved JSON and does not call the
+AI again. AI output can still vary slightly between runs, so re-extracting is a
+deliberate, logged action, and any changed fact is shown to the reviewer.
+
+**How a reviewer sees why a proposal ranked where it did:**
+- Each proposal has a per-criterion breakdown: the extracted value, the points
+  earned, and the formula used.
+- Each extracted fact shows its evidence quote from the proposal, which code has
+  checked exists in the source text.
+- Ineligible and flagged proposals show the reason in plain words, for example
+  "licence not held by the bidder" or "no schedule given".
+- The page shows which criteria version and prompt version produced the result.
+
+## 3. Human in the loop
+
+**Where a person reviews, confirms or overrides:**
+- **Flagged proposals:** anything with a suspicious instruction, a missing key fact
+  or an unclear item is held back. It cannot be ranked until a reviewer clears it,
+  asks the bidder for clarification, or rejects it.
+- **The draft ranking:** the reviewer sees the full ranked list with reasons and
+  must confirm it. They can move a proposal up or down, or change an extracted
+  fact after checking it against the evidence quote. Every override needs a
+  written reason.
+- **Ineligible proposals:** shown with the failed criterion so the reviewer can
+  confirm the decision or correct a wrong extraction.
+- **The award:** the tool only recommends a ranking. A human makes the final award
+  decision.
+
+**What gets logged for audit:**
+- Who uploaded and who reviewed, with timestamps
+- The category, criteria version (mandatory criteria and weights) and prompt version
+- The model name and settings
+- The extracted JSON, including evidence quotes, and which quote checks passed or failed
+- Flags raised and how each was resolved
+- Scores per criterion and the ranking the tool produced
+- Every override: the original value, the new value, who changed it and why
+- The final confirmed ranking
