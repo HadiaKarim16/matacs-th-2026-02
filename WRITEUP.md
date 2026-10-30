@@ -80,3 +80,26 @@ old results stay accurate and explainable.
 
 **Safeguard:** a ranking that has already been confirmed by a reviewer is never
 changed automatically. A new version creates a new draft for review.
+
+
+## 5. Risks
+
+- **Wrong extraction:** every fact needs an evidence quote, and code checks the
+  quote exists in the source text. A mismatch is flagged. The reviewer sees the
+  quote next to each value.
+- **Made-up facts:** the prompt says never guess and use null when a fact is
+  missing. Missing facts are flagged, not scored (for example, a proposal with no
+  schedule).
+- **Manipulation (hidden instructions inside a PDF):** the proposal is treated as
+  data. The AI only extracts and never scores or ranks, and scoring code never
+  reads the raw text. Any instruction aimed at the system is copied into a flag,
+  and a human reviews that proposal.
+- **Bias:** scoring is a fixed formula on extracted facts only. Company name,
+  size and writing style are not scored, and all bidders get the same rules.
+  Reviewers can see and override every score.
+- **Unreadable PDFs (scans, tables):** empty or garbled text is flagged for
+  manual review instead of being scored.
+- **Cost:** one AI call per proposal, extractions are saved and reused for
+  re-scoring, and upload size is limited.
+- **Over-reliance on the tool:** the ranking is a recommendation. A human
+  confirms it and makes the final award decision.
