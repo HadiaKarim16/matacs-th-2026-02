@@ -59,3 +59,24 @@ deliberate, logged action, and any changed fact is shown to the reviewer.
 - Scores per criterion and the ranking the tool produced
 - Every override: the original value, the new value, who changed it and why
 - The final confirmed ranking
+
+
+## 4. Changing criteria
+
+**Criteria are versioned.** An admin edit never changes the old record. It creates
+a new version (v1, v2, ...) holding the mandatory criteria, weighted criteria and
+weights. Every score and ranking stores the criteria version that produced it, so
+old results stay accurate and explainable.
+
+**What happens to proposals already scored:**
+- They keep their old scores and show a notice: "scored with v1, current is v2".
+- The reviewer can choose "re-score with v2". This reuses the saved extracted JSON,
+  so a weight change needs no new AI call and no extra cost.
+- If a new criterion needs a fact that was not extracted before, only the AI
+  extraction step runs again for the proposals concerned, and the change is logged.
+- The old and new rankings are shown side by side with the difference explained
+  (for example, "weight on price changed from 25% to 30%").
+- Weights must total 100%, and the tool blocks saving a version that doesn't.
+
+**Safeguard:** a ranking that has already been confirmed by a reviewer is never
+changed automatically. A new version creates a new draft for review.
